@@ -26,15 +26,21 @@ class Voice{
     console.log(this.frequency);
     const now = this.context.currentTime;
     this.gain.gain.setValueAtTime(0, now);
-    this.gain.gain.linearRampToValueAtTime(1, now + 0.01);
-    this.gain.gain.linearRampToValueAtTime(0.3, now+0.05);
+    this.gain.gain.linearRampToValueAtTime(1, now + 0.1);
+    this.gain.gain.linearRampToValueAtTime(0.3, now+0.5);
     this.gain.gain.linearRampToValueAtTime(0, now + 0.5); 
   }
 
   noteOff(){
     console.log("noteoff")
+    this.gain.gain.linearRampTpValueAtTime(0, this.context.currentTime + 0.1);
+  }
+
+  stop(){
     this.osc.stop();
   }
+
+
 
   // TODO: 
   // - emit events?
@@ -60,15 +66,6 @@ addEventListener("DOMContentLoaded", (event) => {
   const context = new AudioContext();
   const voice = new Voice(context);
 
-  /*
-  const osc = context.createOscillator();
-  const gain = context.createGain();
-
-  osc.type="square";
-  osc.frequency.setValueAtTime(440, context.currentTime);
-  
-
-*/
   const startButton = document.querySelector(".start");
   startButton.addEventListener("click", startAudio);
 
@@ -85,9 +82,9 @@ addEventListener("DOMContentLoaded", (event) => {
   }
 
 window.setInterval(function() {
-    let fq = Math.random()*1000+200;
+    let fq = Math.random()*1000+100;
     voice.noteOn(fq);
-  }, 500);
+  }, 250);
 
 });
 
