@@ -28,7 +28,7 @@ class Voice{
       this.osc.frequency.setValueAtTime(this.frequency, this.context.currentTime);
     }
     console.log(this.frequency);
-    this.asdr(0.1, 0.1, 0.5, 0.5);
+    this.ar(0.5, 0.5);
   }
 
   noteOff(){
@@ -60,6 +60,7 @@ class Voice{
 
 }
 
+const scale = [110, 220, 330, 440, 550, 660, 770, 880];
 
 
 addEventListener("DOMContentLoaded", (event) => { 
@@ -93,9 +94,10 @@ addEventListener("DOMContentLoaded", (event) => {
   }
 
 window.setInterval(function() {
-    let fq = Math.random()*1000+100;
-    voice.noteOn(fq);
-  }, 2000);
+    let note = Math.floor(Math.random()*scale.length);
+      console.log(note);
+    voice.noteOn(scale[note]);
+  }, 1000);
 
 });
 
