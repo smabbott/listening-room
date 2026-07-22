@@ -1,3 +1,7 @@
+  // TODO: 
+  // - emit events?
+  // - a way of storing and retrieving different envelope shapes
+  // - find a way to handle interruption of note. 
 
 class Voice{
   constructor(context){
@@ -24,11 +28,7 @@ class Voice{
       this.osc.frequency.setValueAtTime(this.frequency, this.context.currentTime);
     }
     console.log(this.frequency);
-    const now = this.context.currentTime;
-    this.gain.gain.setValueAtTime(0, now);
-    this.gain.gain.linearRampToValueAtTime(1, now + 0.1);
-    this.gain.gain.linearRampToValueAtTime(0.3, now+0.5);
-    this.gain.gain.linearRampToValueAtTime(0, now + 0.5); 
+    this.asdr(0.1, 0.1, 0.5, 0.5);
   }
 
   noteOff(){
@@ -40,11 +40,22 @@ class Voice{
     this.osc.stop();
   }
 
+  // TODO: not just gain but any parameter
+  asdr(attack, delay, sustain, release){
+    let now = this.context.currentTime;
+    //this.gain.gain.setValueAtTime(0, now);
+    this.gain.gain.linearRampToValueAtTime(1, now + attack); //0.1);
+    this.gain.gain.linearRampToValueAtTime(0.3, now + attack +delay); //0.5);
+    this.gain.gain.setValueAtTime(0.3, now + attack + delay + sustain);
+    this.gain.gain.linearRampToValueAtTime(0, now + attack + delay + sustain + release); //0.5);    
+  }
 
+  ar(attack, release){
+    let now = this.context.currentTime;
+    this.gain.gain.linearRampToValueAtTime(1, now + attack); 
+    this.gain.gain.linearRampToValueAtTime(0, now + attack + release); 
+  }
 
-  // TODO: 
-  // - emit events?
-  // - a way of storing and retrieving different envelope shapes
 
 
 }
@@ -84,7 +95,7 @@ addEventListener("DOMContentLoaded", (event) => {
 window.setInterval(function() {
     let fq = Math.random()*1000+100;
     voice.noteOn(fq);
-  }, 250);
+  }, 2000);
 
 });
 
