@@ -29,14 +29,15 @@ class Voice{
     this.osc.start();
   }
 
-  noteOn(fq){
+  noteOn(fq, length){
     if(fq !== null){
       this.frequency = fq;
       this.osc.frequency.setValueAtTime(this.frequency, this.context.currentTime);
     }
     console.log(this.frequency);
 
-    this.ar(this.gain.gain, 0.5, 0.5);
+    this.ar(this.gain.gain, length * 0.5, length * 0.5);
+    //this.asdr(this.gain.gain, 0.2, 0.2, 0.5, 0.5);
     //this.ar(this.osc.frequency, this.frequency, this.frequency/2);
   }
 
@@ -103,12 +104,12 @@ addEventListener("DOMContentLoaded", (event) => {
     // TODO: this should probably be a tick event that is listened for by all voices.
     window.setInterval(function() {
       let note = Math.floor(Math.random()*scale.length);
-      voice.noteOn(scale[note]);
+      voice.noteOn(scale[note], 1);
     }, 1000);
 
     window.setInterval(function(){
       let note = Math.floor(Math.random()*scale.length);
-      voice2.noteOn(scale[note]);
+      voice2.noteOn(scale[note], 0.5);
     }, 500);
   }
 
