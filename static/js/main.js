@@ -4,18 +4,25 @@
   // - find a way to handle interruption of note. 
 
 class Voice{
-  constructor(context){
+  constructor(context, destination){
     // gain
     // pan
     // waveshape
-
+      //
+    /*if(destination === null){
+        this.destination = context.destination;
+      }else{
+        this.destination = destination;
+      }
+    */
+    this.destination = destination;
     this.frequency = 440;
     this.context = context;
     this.osc = this.context.createOscillator();
     this.gain = this.context.createGain();
     this.osc.frequency.setValueAtTime(this.frequency, this.context.currentTime);
     this.osc.connect(this.gain);
-    this.gain.connect(this.context.destination)    
+    this.gain.connect(this.destination);    
   }
 
   start(){
@@ -28,7 +35,9 @@ class Voice{
       this.osc.frequency.setValueAtTime(this.frequency, this.context.currentTime);
     }
     console.log(this.frequency);
-    this.ar(0.5, 0.5);
+
+    this.ar(this.gain.gain, 0.5, 0.5);
+    //this.ar(this.osc.frequency, this.frequency, this.frequency/2);
   }
 
   noteOff(){
@@ -41,27 +50,26 @@ class Voice{
   }
 
   // TODO: not just gain but any parameter
-  asdr(attack, delay, sustain, release){
+  asdr(property, attack, delay, sustain, release){
     let now = this.context.currentTime;
     //this.gain.gain.setValueAtTime(0, now);
-    this.gain.gain.linearRampToValueAtTime(1, now + attack); //0.1);
-    this.gain.gain.linearRampToValueAtTime(0.3, now + attack +delay); //0.5);
-    this.gain.gain.setValueAtTime(0.3, now + attack + delay + sustain);
-    this.gain.gain.linearRampToValueAtTime(0, now + attack + delay + sustain + release); //0.5);    
+    property.linearRampToValueAtTime(1, now + attack); //0.1);
+    property.linearRampToValueAtTime(0.3, now + attack +delay); //0.5);
+    property.setValueAtTime(0.3, now + attack + delay + sustain);
+    property.linearRampToValueAtTime(0, now + attack + delay + sustain + release); //0.5);    
   }
 
-  ar(attack, release){
+  ar(property, attack, release){
     let now = this.context.currentTime;
-    this.gain.gain.linearRampToValueAtTime(1, now + attack); 
-    this.gain.gain.linearRampToValueAtTime(0, now + attack + release); 
+    property.linearRampToValueAtTime(1, now + attack); 
+    property.linearRampToValueAtTime(0, now + attack + release); 
   }
-
 
 
 }
 
-const scale = [110, 220, 330, 440, 550, 660, 770, 880];
 
+const scale = [110, 220, 330, 440, 550, 660, 770, 880];
 
 addEventListener("DOMContentLoaded", (event) => { 
   // TODO: 
@@ -76,7 +84,11 @@ addEventListener("DOMContentLoaded", (event) => {
   //    - voice types
   //
   const context = new AudioContext();
-  const voice = new Voice(context);
+  const compressor = context.createDynamicsCompressor();
+  const voice = new Voice(context, compressor);
+  const voice2 = new Voice(context, compressor);
+
+  compressor.connect(context.destination, compressor);
 
   const startButton = document.querySelector(".start");
   startButton.addEventListener("click", startAudio);
@@ -86,18 +98,26 @@ addEventListener("DOMContentLoaded", (event) => {
 
   function startAudio(){
     voice.start();
+    voice2.start();
     console.log("start");
+    // TODO: this should probably be a tick event that is listened for by all voices.
+    window.setInterval(function() {
+      let note = Math.floor(Math.random()*scale.length);
+      voice.noteOn(scale[note]);
+    }, 1000);
+
+    window.setInterval(function(){
+      let note = Math.floor(Math.random()*scale.length);
+      voice2.noteOn(scale[note]);
+    }, 500);
   }
 
   function stopAudio(){
     voice.stop();
+    voice2.stop();
   }
 
-window.setInterval(function() {
-    let note = Math.floor(Math.random()*scale.length);
-      console.log(note);
-    voice.noteOn(scale[note]);
-  }, 1000);
+
 
 });
 
