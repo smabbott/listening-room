@@ -8,13 +8,12 @@ class Voice{
     // gain
     // pan
     // waveshape
-      //
-    /*if(destination === null){
+    if(destination === null){
         this.destination = context.destination;
       }else{
         this.destination = destination;
       }
-    */
+    
     this.destination = destination;
     this.frequency = 440;
     this.context = context;
@@ -23,6 +22,7 @@ class Voice{
     this.osc.frequency.setValueAtTime(this.frequency, this.context.currentTime);
     this.osc.connect(this.gain);
     this.gain.connect(this.destination);    
+    console.log("Voice Constructor");
   }
 
   start(){
@@ -34,7 +34,6 @@ class Voice{
       this.frequency = fq;
       this.osc.frequency.setValueAtTime(this.frequency, this.context.currentTime);
     }
-    console.log(this.frequency);
 
     this.ar(this.gain.gain, length * 0.5, length * 0.5);
     //this.asdr(this.gain.gain, 0.2, 0.2, 0.5, 0.5);
@@ -69,6 +68,30 @@ class Voice{
 
 }
 
+class Buzzard extends Voice{
+  constructor(context, destination){
+      super(context, destination);
+      console.log("Buzzard Constructor");
+      this.filter = new BiquadFilterNode(context, {
+        type:'bandpass',
+        Q:10
+      });
+      this.osc.type = "sawtooth";
+      this.osc.connect(this.filter);
+      this.filter.connect(this.destination)
+    }
+  
+  noteOn(fq, length){
+      // TODO: ramp filter frequency down over length of note
+    //this.ar(this.filter.frequency, length/2, length/2);
+    this.filter.frequency.setValueAtTime(fq, this.context.currentTime);
+    this.ar(this.filter.frequency, length/2, length/2);
+    super.noteOn(fq, length);
+  }
+
+}
+
+
 
 const scale = [110, 220, 330, 440, 550, 660, 770, 880];
 
@@ -86,8 +109,9 @@ addEventListener("DOMContentLoaded", (event) => {
   //
   const context = new AudioContext();
   const compressor = context.createDynamicsCompressor();
-  const voice = new Voice(context, compressor);
+  const voice = new Buzzard(context, compressor);
   const voice2 = new Voice(context, compressor);
+  const voice3 = new Voice(context, compressor);
 
   compressor.connect(context.destination, compressor);
 
@@ -100,22 +124,31 @@ addEventListener("DOMContentLoaded", (event) => {
   function startAudio(){
     voice.start();
     voice2.start();
+    voice3.start();
     console.log("start");
     // TODO: this should probably be a tick event that is listened for by all voices.
     window.setInterval(function() {
       let note = Math.floor(Math.random()*scale.length);
-      voice.noteOn(scale[note], 1);
+      voice.noteOn(scale[note]*0.75, 1);
     }, 1000);
 
     window.setInterval(function(){
       let note = Math.floor(Math.random()*scale.length);
       voice2.noteOn(scale[note], 0.5);
     }, 500);
+
+    window.setInterval(function(){
+        let note = Math.floor(Math.random()*scale.length);
+        voice3.noteOn(scale[note], 0.1)
+      }, 333.33);
   }
+
+
 
   function stopAudio(){
     voice.stop();
     voice2.stop();
+    voice3.stop();
   }
 
 
