@@ -107,6 +107,24 @@ addEventListener("DOMContentLoaded", (event) => {
   //    - scales, 
   //    - voice types
   //
+
+  // establish a websocket connection
+  const socket = io();
+
+  socket.on("connect", () => {
+    console.log("socket connected: ", socket.connected); 
+  });
+
+  socket.on("connect_error", (error) => {
+    if (socket.active) {
+      // temporary failure, the socket will automatically try to reconnect
+    } else {
+      // the connection was denied by the server
+      // in that case, `socket.connect()` must be manually called in order to reconnect
+      console.log(error.message);
+    }
+  });
+
   const context = new AudioContext();
   const compressor = context.createDynamicsCompressor();
   const voice = new Buzzard(context, compressor);
