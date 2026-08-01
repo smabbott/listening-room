@@ -126,6 +126,9 @@ class Sequencer{
         // allows for tracks of different length to play simultaneously
         // slipping in and out of sync
         let beat = this.tickCount%track.mask.length-1;
+        // TODO: interperate numbers as fractional beats rather than simply on or off
+        // - shold this support odd polyrhythms or quantize to a given set of "safe" subdivisions?
+        // - could there be a way to dynamically change this quantization over time as a gobal parameter?
         if(track.mask[beat] !== 0){
           console.log("note on");
           let note = scale[Math.floor(Math.random()*scale.length)];
@@ -164,7 +167,7 @@ addEventListener("DOMContentLoaded", (event) => {
   // gather information about the client 
   // that we will then interperate as musical parameters
   socket.emit("join", {
-      voice:navigator.oscpu, // Linux x86_64
+      voice:"Buzzard",//navigator.oscpu, // Linux x86_64
       browser:navigator.appCodeName, // Mozilla
       codename:navigator.appVersion, // 5.0 (Xll)
       rhythm:navigator.buildID, //  "20181001000000"
@@ -181,18 +184,33 @@ addEventListener("DOMContentLoaded", (event) => {
   })
 
   socket.on("add_voice", (d)=>{
-      console.log(d);
+    //debugger
+    
+    var rhythm = d.rhythm.split("");
+    var voice;
+    switch (d.voice) {
+      case "Voice":
+        voice = new Voice(context, compressor);
+        break;
+      case "Buzzard":
+        voice = new Buzzard(context, compressor);
+      default:
+        break;
+    }
+
+    sequencer.addTrack({voice:voice, mask:rhythm})
+
   });
 
   const context = new AudioContext();
   const compressor = context.createDynamicsCompressor();
 //  const voice = new Buzzard(context, compressor);
   //const voice2 = new Voice(context, compressor);
-  const voice3 = new Voice(context, compressor);
+ // const voice3 = new Voice(context, compressor);
 
   //sequencer.addTrack({voice:voice, mask:[1,0,1,0,1,0]});
   //sequencer.addTrack({voice:voice2, mask:[0,1,0,1,0,1]});
-  sequencer.addTrack({voice:voice3, mask:[1,0,0,1,0,0]});
+ // sequencer.addTrack({voice:voice3, mask:[1,0,0,1,0,0]});
 
   compressor.connect(context.destination, compressor);
 
@@ -203,10 +221,7 @@ addEventListener("DOMContentLoaded", (event) => {
   stopButton.addEventListener("click", stopAudio);
 
   function startAudio(){
-  //  voice.start();
-   // voice2.start();
-    voice3.start();
-
+    sequencer.tracks[0].voice.start();
 
     const clock = new Clock(2000, ()=>{
       sequencer.tick();
@@ -217,9 +232,6 @@ addEventListener("DOMContentLoaded", (event) => {
 
 
   function stopAudio(){
-    //voice.stop();
-    //voice2.stop();
-    voice3.stop();
   }
 
 
