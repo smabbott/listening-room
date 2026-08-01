@@ -161,19 +161,27 @@ addEventListener("DOMContentLoaded", (event) => {
 
   // establish a websocket connection
   const socket = io();
+  // gather information about the client 
+  // that we will then interperate as musical parameters
+  socket.emit("join", {
+      voice:navigator.oscpu, // Linux x86_64
+      browser:navigator.appCodeName, // Mozilla
+      codename:navigator.appVersion, // 5.0 (Xll)
+      rhythm:navigator.buildID, //  "20181001000000"
+      sequence:Date.now.toString(), // 1785606925292
+      language:clientInformation.language, // en-US
+      hw:clientInformation.hardwareConcurrency, // 8
+      tp:clientInformation.maxTouchPoints, // 5
+      height:window.innerHeight, // 263
+      width:window.innerWidth // 736
+   });
 
-  socket.on("connect", () => {
-    console.log("socket connected: ", socket.connected); 
-  });
+  socket.on("message", (msg)=>{
+    console.log(msg)
+  })
 
-  socket.on("connect_error", (error) => {
-    if (socket.active) {
-      // temporary failure, the socket will automatically try to reconnect
-    } else {
-      // the connection was denied by the server
-      // in that case, `socket.connect()` must be manually called in order to reconnect
-      console.log(error.message);
-    }
+  socket.on("add_voice", (d)=>{
+      console.log(d);
   });
 
   const context = new AudioContext();
