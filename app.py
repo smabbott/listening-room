@@ -32,7 +32,9 @@ def index():
 # FIXME: if the client refreshes there is a connection error
 @socketio.on('join')
 def handle_join(d):
-    emit("add_voice", d)
+    # TODO: emit 1 event that broadcasts to all clients
+    # another that initializes the client that triggered?
+    emit("add_voice", d, broadcast=True)
 
 
 @socketio.on("message")

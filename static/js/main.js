@@ -21,12 +21,21 @@ addEventListener("DOMContentLoaded", (event) => {
   const socket = io();
   // gather information about the client 
   // that we will then interperate as musical parameters
+  var voice = "Voice";
+  var cpu = navigator.platform.toLowerCase();
+
+  if(/linux/.test(cpu)){
+       voice = "Buzzard";
+  }else if(/windows/.test(cpu)){
+       //…
+  }
+
   socket.emit("join", {
       voice:"Buzzard",//navigator.oscpu, // Linux x86_64
       browser:navigator.appCodeName, // Mozilla
       codename:navigator.appVersion, // 5.0 (Xll)
-      rhythm:navigator.buildID, //  "20181001000000"
-      sequence:Date.now.toString(), // 1785606925292
+      rhythm:navigator.productSub, //  "20181001000000"
+      sequence:Date.now().toString(),
       language:clientInformation.language, // en-US
       hw:clientInformation.hardwareConcurrency, // 8
       tp:clientInformation.maxTouchPoints, // 5
@@ -39,7 +48,8 @@ addEventListener("DOMContentLoaded", (event) => {
   })
 
   socket.on("add_voice", (d)=>{
-    
+    console.log("addVoice")
+    console.log(d)
     var rhythm = d.rhythm.split("");
     var voice;
     switch (d.voice) {
