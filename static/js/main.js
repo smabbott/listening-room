@@ -13,6 +13,7 @@ import {Clock, Sequencer} from './modules/sequencer.js';
 
 const sequencer = new Sequencer();
 const scale = [110, 220, 330, 440, 550, 660, 770, 880];
+sequencer.setScale(scale);
 
 addEventListener("DOMContentLoaded", (event) => { 
 
@@ -67,7 +68,7 @@ addEventListener("DOMContentLoaded", (event) => {
   stopButton.addEventListener("click", stopAudio);
 
   function startAudio(){
-    sequencer.tracks[0].voice.start();
+    //sequencer.tracks[0].voice.start();
 
     // TODO: move this to the internals of the sequencer class
     const clock = new Clock(2000, ()=>{

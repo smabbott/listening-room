@@ -29,11 +29,13 @@ class Voice{
     console.log("noteOn ", fq, length)
     var osc = this.context.createOscillator();
     var gain = this.context.createGain();
-    osc.frequency.setValueAtTime(fq, this.context.currentTime);
+    var now = this.context.currentTime;
+    gain.gain.setValueAtTime(0, now);
+    osc.frequency.setValueAtTime(fq, now);
     osc.connect(gain);
     gain.connect(this.destination);
+    osc.frequency.setValueAtTime(fq, now);
     osc.start();
-    osc.frequency.setValueAtTime(fq, this.context.currentTime);
     /*
     if(fq !== null){
       this.frequency = fq;
