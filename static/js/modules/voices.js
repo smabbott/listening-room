@@ -42,14 +42,6 @@ class Voice{
   // TODO: option to set peak value
   ar(property, attack, release, delay){
     var startTime = this.context.currentTime + delay;
-    /*
-    console.log("ar--------------")
-    console.log("delay", delay)
-    console.log("startTime:", startTime)
-    console.log("attack:", attack)
-    console.log("release:", release)
-    */
-
     property.setValueAtTime(0, startTime);
     property.linearRampToValueAtTime(1, startTime + attack); 
     property.linearRampToValueAtTime(0, startTime + attack + release); 
@@ -58,20 +50,6 @@ class Voice{
 }
 
 class Buzzard extends Voice{
-  constructor(context, destination){
-      super(context, destination);
-    /*
-      this.filter = new BiquadFilterNode(context, {
-        type:'bandpass',
-        Q:10
-      });
-      this.osc.type = "sawtooth";
-      this.osc.disconnect();
-      this.osc.connect(this.filter);
-      this.filter.connect(this.destination);
-    */
-      
-    }
   
   // TODO: rather than repeating, this should be calling super()
   // However, this has not been working. 
@@ -94,7 +72,6 @@ class Buzzard extends Voice{
     filter.connect(this.destination);
     osc.start();
     this.ar(gain.gain, length * 0.5, length * 0.5, delay);
-    //this.ar(filter.frequency, length*0.5, length*0.5, delay);
     filter.frequency.linearRampToValueAtTime(40, now + length + delay);
   }
 
