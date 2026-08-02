@@ -46,8 +46,7 @@ class Sequencer{
         // - shold this support odd polyrhythms or quantize to a given set of "safe" subdivisions?
         // - could there be a way to dynamically change this quantization over time as a gobal parameter?
         if(track.mask[beat] !== 0){
-          console.log("note on");
-          let note = scale[Math.floor(Math.random()*scale.length)];
+          let note = this.scale[Math.floor(Math.random()*this.scale.length)];
           track.voice.noteOn(note, 1);
 
         }else{

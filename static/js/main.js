@@ -1,6 +1,9 @@
-  // TODO: 
+   // TODO: 
+  // - define parameters which "compose the sound"
+  //  - these are global parameters determining 
+  //    - key, 
+  //    - chord changes, 
   // - a way of storing and retrieving different envelope shapes
-  // - find a way to handle interruption of note. 
   // - set default octave range and note length
   // - global dynamics
 
@@ -12,23 +15,13 @@ const sequencer = new Sequencer();
 const scale = [110, 220, 330, 440, 550, 660, 770, 880];
 
 addEventListener("DOMContentLoaded", (event) => { 
-  // TODO: 
-  // - create a system (factory?) for generating voices
-  // - define parameters which "compose the sound"
-  //  - these are global parameters determining 
-  //    - tempo / clock, 
-  //    - key, 
-  //    - chord changes, 
-  //    - scales, 
-  //    - voice types
-  //
 
   // establish a websocket connection
   const socket = io();
   // gather information about the client 
   // that we will then interperate as musical parameters
   socket.emit("join", {
-      voice:"Buzzard",//navigator.oscpu, // Linux x86_64
+      voice:"Voice",//navigator.oscpu, // Linux x86_64
       browser:navigator.appCodeName, // Mozilla
       codename:navigator.appVersion, // 5.0 (Xll)
       rhythm:navigator.buildID, //  "20181001000000"

@@ -10,25 +10,37 @@ class Voice{
       }
     
     this.destination = destination;
-    this.frequency = 440;
+    //this.frequency = 440;
     this.context = context;
+    /*
     this.osc = this.context.createOscillator();
     this.gain = this.context.createGain();
     this.osc.frequency.setValueAtTime(this.frequency, this.context.currentTime);
     this.osc.connect(this.gain);
     this.gain.connect(this.destination);    
+    */
   }
 
-  start(){
-    this.osc.start();
-  }
+//  start(){
+    //this.osc.start();
+ // }
 
   noteOn(fq, length){
+    console.log("noteOn ", fq, length)
+    var osc = this.context.createOscillator();
+    var gain = this.context.createGain();
+    osc.frequency.setValueAtTime(fq, this.context.currentTime);
+    osc.connect(gain);
+    gain.connect(this.destination);
+    osc.start();
+    osc.frequency.setValueAtTime(fq, this.context.currentTime);
+    /*
     if(fq !== null){
       this.frequency = fq;
       this.osc.frequency.setValueAtTime(this.frequency, this.context.currentTime);
     }
-    this.ar(this.gain.gain, length * 0.5, length * 0.5);
+    */
+    this.ar(gain.gain, length * 0.5, length * 0.5);
   }
 
   noteOff(){
@@ -66,6 +78,7 @@ class Buzzard extends Voice{
         type:'bandpass',
         Q:10
       });
+      // FIXME:
       this.osc.type = "sawtooth";
       this.osc.disconnect();
       this.osc.connect(this.filter);
