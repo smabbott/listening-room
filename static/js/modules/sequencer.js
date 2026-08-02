@@ -26,6 +26,7 @@ class Sequencer{
       this.tracks =[];
       // track = {voice:v1, mask:[1,0,1,0,], length, frequency, emphasis}
       this.tickCount = 0;
+      this.noteLength = 1; // TODO: make a setter and/or link this to the speed of the clock
 
     }
 
@@ -45,9 +46,22 @@ class Sequencer{
         // TODO: interperate numbers as fractional beats rather than simply on or off
         // - shold this support odd polyrhythms or quantize to a given set of "safe" subdivisions?
         // - could there be a way to dynamically change this quantization over time as a gobal parameter?
+      // - for i in numBeats 
+      //   - delay += i*(noteLength/numbeats)
+      //   - noteOn(note, noteLength/numBeats, delay)
         if(track.mask[beat] !== 0){
-          let note = this.scale[Math.floor(Math.random()*this.scale.length)];
-          track.voice.noteOn(note, 1);
+          console.log("o");
+          var repeats = track.mask[beat];
+          var delay = 0;
+          for(var i=0; i < repeats; i++ ){
+            var length = this.noteLength/repeats;
+            delay += length;
+            // TODO: don't make this random, use the melody parameter for the track
+            let note = this.scale[Math.floor(Math.random()*this.scale.length)];
+            track.voice.noteOn(note, length, delay);
+           
+          } 
+
 
         }else{
           console.log("skip beat");

@@ -1,8 +1,5 @@
 class Voice{
   constructor(context, destination){
-    // gain
-    // pan
-    // waveshape
     if(destination === null){
         this.destination = context.destination;
       }else{
@@ -10,23 +7,11 @@ class Voice{
       }
     
     this.destination = destination;
-    //this.frequency = 440;
     this.context = context;
-    /*
-    this.osc = this.context.createOscillator();
-    this.gain = this.context.createGain();
-    this.osc.frequency.setValueAtTime(this.frequency, this.context.currentTime);
-    this.osc.connect(this.gain);
-    this.gain.connect(this.destination);    
-    */
   }
 
-//  start(){
-    //this.osc.start();
- // }
 
-  noteOn(fq, length){
-    console.log("noteOn ", fq, length)
+  noteOn(fq, length, delay=0){
     var osc = this.context.createOscillator();
     var gain = this.context.createGain();
     var now = this.context.currentTime;
@@ -34,15 +19,8 @@ class Voice{
     osc.frequency.setValueAtTime(fq, now);
     osc.connect(gain);
     gain.connect(this.destination);
-    osc.frequency.setValueAtTime(fq, now);
     osc.start();
-    /*
-    if(fq !== null){
-      this.frequency = fq;
-      this.osc.frequency.setValueAtTime(this.frequency, this.context.currentTime);
-    }
-    */
-    this.ar(gain.gain, length * 0.5, length * 0.5);
+    this.ar(gain.gain, length * 0.5, length * 0.5, delay);
   }
 
   noteOff(){
@@ -53,22 +31,28 @@ class Voice{
     this.osc.stop();
   }
 
-  asdr(property, attack, delay, sustain, release){
+  asdr(property, attack, decay, sustain, release){
     let now = this.context.currentTime;
     property.linearRampToValueAtTime(1, now + attack); //0.1);
-    property.linearRampToValueAtTime(0.3, now + attack +delay); //0.5);
-    property.setValueAtTime(0.3, now + attack + delay + sustain);
-    property.linearRampToValueAtTime(0, now + attack + delay + sustain + release); //0.5);    
+    property.linearRampToValueAtTime(0.3, now + attack +decay); //0.5);
+    property.setValueAtTime(0.3, now + attack + decay + sustain);
+    property.linearRampToValueAtTime(0, now + attack + decay + sustain + release); //0.5);    
   }
 
-  // FIXME: 
-    // Sometimes there is a click as if a note has not finished before the next note is started.
-    // This occurs more frequently when the tempo is higher.
-    // Create a new oscillator for each note?
-  ar(property, attack, release){
-    let now = this.context.currentTime;
-    property.linearRampToValueAtTime(1, now + attack); 
-    property.linearRampToValueAtTime(0, now + attack + release); 
+  // TODO: option to set peak value
+  ar(property, attack, release, delay){
+    var startTime = this.context.currentTime + delay;
+    /*
+    console.log("ar--------------")
+    console.log("delay", delay)
+    console.log("startTime:", startTime)
+    console.log("attack:", attack)
+    console.log("release:", release)
+    */
+
+    property.setValueAtTime(0, startTime);
+    property.linearRampToValueAtTime(1, startTime + attack); 
+    property.linearRampToValueAtTime(0, startTime + attack + release); 
   }
 
 }
@@ -76,23 +60,42 @@ class Voice{
 class Buzzard extends Voice{
   constructor(context, destination){
       super(context, destination);
+    /*
       this.filter = new BiquadFilterNode(context, {
         type:'bandpass',
         Q:10
       });
-      // FIXME:
       this.osc.type = "sawtooth";
       this.osc.disconnect();
       this.osc.connect(this.filter);
       this.filter.connect(this.destination);
+    */
+      
     }
   
-  noteOn(fq, length){
-      // TODO: ramp filter frequency down over length of note
-    //this.ar(this.filter.frequency, length/2, length/2);
-    this.filter.frequency.setValueAtTime(fq, this.context.currentTime);
-    this.ar(this.filter.frequency, length*0.5, length*0.5);
-    super.noteOn(fq/2, length);
+  // TODO: rather than repeating, this should be calling super()
+  // However, this has not been working. 
+  // Maybe there is a way to do it with a callback or a seperate construct
+  noteOn(fq, length, delay=0){
+    var frequency = fq/2;
+    var osc = this.context.createOscillator();
+    var gain = this.context.createGain();
+    var now = this.context.currentTime;
+    var filter = new BiquadFilterNode(this.context, {
+      type:'bandpass',
+      Q:10
+    });
+    osc.type="sawtooth";
+    gain.gain.setValueAtTime(0, now);
+    osc.frequency.setValueAtTime(frequency, now);
+    filter.frequency.setValueAtTime(frequency, now);
+    osc.connect(gain);
+    gain.connect(filter);
+    filter.connect(this.destination);
+    osc.start();
+    this.ar(gain.gain, length * 0.5, length * 0.5, delay);
+    //this.ar(filter.frequency, length*0.5, length*0.5, delay);
+    filter.frequency.linearRampToValueAtTime(40, now + length + delay);
   }
 
 }

@@ -22,7 +22,7 @@ addEventListener("DOMContentLoaded", (event) => {
   // gather information about the client 
   // that we will then interperate as musical parameters
   socket.emit("join", {
-      voice:"Voice",//navigator.oscpu, // Linux x86_64
+      voice:"Buzzard",//navigator.oscpu, // Linux x86_64
       browser:navigator.appCodeName, // Mozilla
       codename:navigator.appVersion, // 5.0 (Xll)
       rhythm:navigator.buildID, //  "20181001000000"
