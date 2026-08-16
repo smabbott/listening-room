@@ -1,0 +1,74 @@
+/* TODO: css reset */
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@700&family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+
+html{
+  background-color:teal; 
+}
+
+
+html, body{
+  padding:0;
+  margin:0;
+  height:100%;
+  font-family:"IBM Plex Mono";
+}
+
+.main{
+  mix-blend-mode: multiply;
+  background-image:url('../img/starry_sky.jpg');
+  background-size:cover;
+  border:1em solid white;
+  height:100%;
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column-reverse;
+}
+
+.main::after, .main::before{
+  content:" ";
+  display:block;
+  position:absolute;
+  width: 0;
+  height: 0;
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+.main::after{
+  bottom:1em;
+  right:1em;
+  border-left: 2em solid transparent;
+  border-bottom: 2em solid white;
+}
+
+.main::before{
+  top:1em;
+  left:1em;
+  border-right: 2em solid transparent;
+  border-top: 2em solid white;
+}
+
+h1{
+  letter-spacing:-0.16em;
+  font-size:20em;
+  color:white;
+}
+
+.hud{
+  /* display:flex; */
+  /* flex-direction:row; */
+  /* background-color:white; */
+
+  padding:0;
+  margin:0;
+
+}
+
+.voice-display{
+  display:inline-block;
+  background-color:white;
+}
+
