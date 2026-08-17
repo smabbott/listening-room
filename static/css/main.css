@@ -1,7 +1,5 @@
 /* TODO: css reset */
 
-
-
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@700&family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
 
 html{
@@ -15,6 +13,14 @@ html, body{
   height:100%;
   font-family:"IBM Plex Mono";
 }
+
+ul{
+  list-style-type: none;
+  padding:0px;
+  margin:0px;
+}
+
+
 
 .main{
   mix-blend-mode: multiply;
@@ -51,7 +57,17 @@ html, body{
   border-top: 2em solid white;
 }
 
+header{
+  align-self:center;
+  flex-grow:2;
+  justify-content:center;
+  flex-direction:column;
+  display:flex;
+}
+
 h1{
+  margin:0;
+  line-height:0;
   letter-spacing:-0.16em;
   font-size:20em;
   color:white;
@@ -61,14 +77,37 @@ h1{
   /* display:flex; */
   /* flex-direction:row; */
   /* background-color:white; */
-
-  padding:0;
-  margin:0;
-
+  
 }
+
 
 .voice-display{
   display:inline-block;
   background-color:white;
+  max-width:25%;
 }
 
+.hud li{
+  display:inline-block;
+}
+
+.hud li ul{
+  display:grid;
+  grid-template-columns:repeat(5, 1fr);
+  grid-template-rows:1fr 1fr;
+  padding: 0 0.5em;
+}
+
+.voice-display li{
+  padding:0.25em;
+  font-size:0.625em;/* 10px */
+}
+
+.voice-display .icon{
+  float: left;
+  height: 2em;
+}
+
+.start{
+  position:absolute;
+}

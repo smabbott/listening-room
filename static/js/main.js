@@ -15,6 +15,7 @@ const sequencer = new Sequencer();
 const scale = [110, 220, 330, 440, 550, 660, 770, 880];
 sequencer.setScale(scale);
 
+
 addEventListener("DOMContentLoaded", (event) => { 
 
   // establish a websocket connection
@@ -62,7 +63,10 @@ addEventListener("DOMContentLoaded", (event) => {
         break;
     }
 
-    sequencer.addTrack({voice:voice, mask:rhythm})
+    sequencer.addTrack({voice:voice, mask:rhythm});
+
+    let hud = document.querySelector('.hud');
+    hud.innerHTML += renderVoiceDisplay(d);
 
   });
 
@@ -76,6 +80,28 @@ addEventListener("DOMContentLoaded", (event) => {
 
   const stopButton = document.querySelector(".stop");
   stopButton.addEventListener("click", stopAudio);
+
+  function renderVoiceDisplay(voice){
+    let icon = "static/img/icons/";
+    switch(voice.type){
+      case "Voice":
+         icon += "triangle.svg";
+      case "Buzzard":
+         icon += "square.svg";
+      default:
+         icon += "triangle.svg";
+    }
+
+    let displayContent = `<li class="voice-display"><img class="icon" src="${icon}"/><ul>`;
+    for (const [k, v] of Object.entries(voice)) {
+      displayContent += 
+        `<li>
+          ${parseInt(v).toString(16).padStart(2, "0").toUpperCase()}
+        </li>`
+    }
+    displayContent += `</ul></li>`;
+    return displayContent;
+  }
 
   function startAudio(){
     //sequencer.tracks[0].voice.start();
