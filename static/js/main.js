@@ -32,16 +32,17 @@ addEventListener("DOMContentLoaded", (event) => {
   }
 
   socket.emit("join", {
-      voice:"Buzzard",//navigator.oscpu, // Linux x86_64
+      cpu: navigator.platform.toLowerCase(),
       browser:navigator.appCodeName, // Mozilla
       codename:navigator.appVersion, // 5.0 (Xll)
-      rhythm:navigator.productSub, //  "20181001000000"
-      sequence:Date.now().toString(),
+      productSub:navigator.productSub, //  "20181001000000"
+      timestamp:Date.now().toString(),
       language:clientInformation.language, // en-US
-      hw:clientInformation.hardwareConcurrency, // 8
-      tp:clientInformation.maxTouchPoints, // 5
+      cores:clientInformation.hardwareConcurrency, // 8
+      touchpoints:clientInformation.maxTouchPoints, // 5
       height:window.innerHeight, // 263
       width:window.innerWidth // 736
+
    });
 
   socket.on("message", (msg)=>{
@@ -49,8 +50,6 @@ addEventListener("DOMContentLoaded", (event) => {
   })
 
   socket.on("add_voice", (d)=>{
-    console.log("addVoice")
-    console.log(d)
     var rhythm = d.rhythm.split("");
     var voice;
     switch (d.voice) {

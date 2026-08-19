@@ -34,7 +34,22 @@ def index():
 def handle_join(d):
     # TODO: emit 1 event that broadcasts to all clients
     # another that initializes the client that triggered?
-    emit("add_voice", d, broadcast=True)
+    # store objects in some sort of database
+    print(d)
+    cpu = d['cpu'].lower()
+    generator = "Voice"
+    if cpu.find("linux") > -1:
+        generator = "Buzzard"
+    elif cpu.find("windows") > -1:
+        generator = "Voice"
+    
+    voice = {
+        "voice": generator,
+        "rhythm": d['productSub'],
+        "melody":d['timestamp']
+        # TODO: more parameters
+    }
+    emit("add_voice", voice, broadcast=True)
 
 
 @socketio.on("message")
@@ -42,6 +57,8 @@ def handle_message(msg):
     print("message received: ", msg)
     socketio.emit("reveived message: " + msg )
 
+
+# TODO: handle disconnections
 
 if __name__ == "__main__":
     #app.run(host="0.0.0.0", port=5000, debug=True)
