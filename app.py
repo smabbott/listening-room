@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, send, emit
+import uuid
 
 SITE_NAME = "Listening Room"
 AUTHOR = "Seth Mabbott"
@@ -9,10 +10,11 @@ app.config['SECRET_KEY'] = "change_this"
 
 socketio = SocketIO(app)
 
-# keep track of details that define a room. 
-# It's ok if this object is not persistant since it is updated any time a client connects or disconnects
+# A global dictionary to track all connected clients
+# TODO: 
+# It's not necessary to keep this in a database since it is all ephemeral anyway
 voices = {}
-users = {}
+aliases = {}
 
 # ROUTES #
 
@@ -30,12 +32,12 @@ def index():
 # socketio.emit("state_update",  room_status)
 
 # FIXME: if the client refreshes there is a connection error
+# sid changes between page refreshes. 
 @socketio.on('join')
 def handle_join(d):
     # TODO: emit 1 event that broadcasts to all clients
     # another that initializes the client that triggered?
     # store objects in some sort of database
-    print(d)
     cpu = d['cpu'].lower()
     generator = "Voice"
     if cpu.find("linux") > -1:
@@ -49,7 +51,12 @@ def handle_join(d):
         "melody":d['timestamp']
         # TODO: more parameters
     }
+    alias = str(uuid.uuid4())[:8]
+    aliases[request.sid] = alias
+    voices[alias] = voice
+
     emit("add_voice", voice, broadcast=True)
+    # TODO: emit to just the newly connected client the full object of voices
 
 
 @socketio.on("message")
