@@ -44,20 +44,35 @@ def handle_join(d):
         generator = "Buzzard"
     elif cpu.find("windows") > -1:
         generator = "Voice"
+    # TODO: mac 
     
+    alias = str(uuid.uuid4())[:8]
     voice = {
         "voice": generator,
         "rhythm": d['productSub'],
-        "melody":d['timestamp']
-        # TODO: more parameters
+        "melody":d['timestamp'],
+        "alias":alias
     }
-    alias = str(uuid.uuid4())[:8]
-    aliases[request.sid] = alias
+
+    # TODO: use thread locking
+    aliases[request.sid] = voice 
     voices[alias] = voice
 
+    emit("init_voices", voices)
     emit("add_voice", voice, broadcast=True)
-    # TODO: emit to just the newly connected client the full object of voices
 
+@socketio.on("disconnect")
+def handle_disconnect(d):
+    print("disconnect")
+    alias = aliases[request.sid].alias
+    aliases.pop(request.sid)
+    voices.pop(alias)
+    
+    emit("remove_voice", alias)
+
+
+# TODO: is there a standard way of detecting a disconnection?
+# - remove the voice/alias from aliases. broadcast removal to all clients
 
 @socketio.on("message")
 def handle_message(msg):
