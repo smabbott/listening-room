@@ -1,5 +1,11 @@
 What if the digital footprint of visitors to a web space could be turned into music? What might that sound like? There are countless ways visitor data might be interpreted to generate sound, and dare I say, even music. Listening Room is a playground for turning the data browsers give away into something we can hear. It is a curious "why not" response to a "what if" question that serves as a set of constraints for composing real-time generative music. 
 
+This project is very much in progress but the proof of concept looks something like this
+
+https://github.com/user-attachments/assets/f95dd631-cc65-41dd-9da9-26a52935b776
+
+
+
 ### how it works
 When a browser loads Listening Room certain pieces of non-sensitive information about that connection are shared with the server
 - operating system
