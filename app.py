@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session
+from flask_session import Session
 from flask_socketio import SocketIO, send, emit
 import uuid
 
@@ -6,9 +7,11 @@ SITE_NAME = "Listening Room"
 AUTHOR = "Seth Mabbott"
 
 app = Flask(__name__)
+app.config['SESSION_PERMANENT']=False
+app.config["SESSION_TYPE"]='filesystem'
 app.config['SECRET_KEY'] = "change_this"
-
-socketio = SocketIO(app)
+Session(app)
+socketio = SocketIO(app, manage_session=False)
 
 # A global dictionary to track all connected clients
 # TODO: 
@@ -21,6 +24,15 @@ aliases = {}
 # Home
 @app.route("/")
 def index():
+    print(session)
+    try:
+        session['alias']
+    except KeyError:
+        print('new client. create alias')
+        session["alias"] = str(uuid.uuid4())[:8]
+    else:
+        print("alias exists", session['alias'])
+
     return render_template("rooms/1.html")
 
 # SOCKETIO ROUTES #
@@ -31,44 +43,56 @@ def index():
     # When a client connects, broadcast a "room state object" to all clients describing parameters for the room
 # socketio.emit("state_update",  room_status)
 
-# FIXME: if the client refreshes there is a connection error
-# sid changes between page refreshes. 
 @socketio.on('join')
 def handle_join(d):
-    # TODO: emit 1 event that broadcasts to all clients
-    # another that initializes the client that triggered?
-    # store objects in some sort of database
-    cpu = d['cpu'].lower()
-    generator = "Voice"
-    if cpu.find("linux") > -1:
-        generator = "Buzzard"
-    elif cpu.find("windows") > -1:
+
+# look for a corresponding voice in voices
+# if there is none, create one 
+    try:
+        voices[session['alias']]
+    except KeyError:
+        print("voice is new", session['alias'])
+        alias = session['alias']
+        cpu = d['cpu'].lower()
         generator = "Voice"
-    # TODO: mac 
-    
-    alias = str(uuid.uuid4())[:8]
-    voice = {
-        "voice": generator,
-        "rhythm": d['productSub'],
-        "melody":d['timestamp'],
-        "alias":alias
-    }
+        if cpu.find("linux") > -1:
+            generator = "Buzzard"
+        elif cpu.find("windows") > -1:
+            generator = "Voice"
+        # TODO: mac, ios, android, other
 
-    # TODO: use thread locking
-    aliases[request.sid] = voice 
-    voices[alias] = voice
+        voice = {
+            "voice": generator,
+            "rhythm": d['productSub'],
+            "melody":d['timestamp'],
+            "alias":alias
+        }
 
-    emit("init_voices", voices)
-    emit("add_voice", voice, broadcast=True)
+        # TODO: use thread locking
+        # aliases[request.sid] = alias 
+        voices[alias] = voice
+        session['alias'] = alias
+        emit("add_voice", voice, broadcast=True)
+        emit("init_voices", voices)
+    else:
+        print('voice exists', session['alias'])
+        voice = voices[session['alias']]
+        emit("init_voices", voices)
+        
+    print(voices)
+
 
 @socketio.on("disconnect")
 def handle_disconnect(d):
     print("disconnect")
-    alias = aliases[request.sid].alias
-    aliases.pop(request.sid)
-    voices.pop(alias)
-    
-    emit("remove_voice", alias)
+    # aliases.pop(request.sid)
+    try: session['alias']
+    except KeyError:
+        print("alias not found")
+    else:
+        voices.pop(session['alias'])
+        
+        emit("remove_voice", session['alias'])
 
 
 # TODO: is there a standard way of detecting a disconnection?

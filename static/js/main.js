@@ -45,10 +45,7 @@ addEventListener("DOMContentLoaded", (event) => {
   });
 
   // when a client connects it receives this message for initializing any existing voices in the room
-  // 
   socket.on("init_voices", (voices) => {
-    //console.log(vs);
-
     for (const [key, voice] of Object.entries(voices)) {
       addVoice(voice);
     }
@@ -63,7 +60,8 @@ addEventListener("DOMContentLoaded", (event) => {
 
 
   function addVoice(v) {
-    console.log("add voice")
+    console.log("add voice", v.alias);
+    console.log("hasTrack?", sequencer.hasTrack(v.alias));
     if (!sequencer.hasTrack(v.alias)) {
       var rhythm = v.rhythm.split("");
       var voice;
