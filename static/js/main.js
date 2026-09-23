@@ -56,7 +56,11 @@ addEventListener("DOMContentLoaded", (event) => {
   socket.on("remove_voice", (id) => {
     console.log("remove voice", id)
     sequencer.removeTrack(id);
+    // TODO: remove HUD by id
+    var display = document.getElementById(id).remove();
+
   });
+
 
 
   function addVoice(v) {
@@ -104,7 +108,7 @@ addEventListener("DOMContentLoaded", (event) => {
         icon += "triangle.svg";
     }
 
-    let displayContent = `<li class="voice-display"><img class="icon" src="${icon}"/><ul>`;
+    let displayContent = `<li id="${voice.alias}" class="voice-display"><img class="icon" src="${icon}"/><ul>`;
     for (const [k, v] of Object.entries(voice)) {
       displayContent +=
         `<li>

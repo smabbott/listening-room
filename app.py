@@ -91,8 +91,7 @@ def handle_disconnect(d):
         print("alias not found")
     else:
         voices.pop(session['alias'])
-        
-        emit("remove_voice", session['alias'])
+        emit("remove_voice", session['alias'], broadcast=True)
 
 
 # TODO: is there a standard way of detecting a disconnection?

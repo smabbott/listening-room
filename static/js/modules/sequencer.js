@@ -78,8 +78,10 @@ class Sequencer {
 
   removeTrack(id) {
     console.log("remove voice", id);
+    console.log("currently…", this.tracks)
     // filter the tracks array looking for matching id, remove that item.
-    this.tracks = this.tracks.filter((track) => { track.id !== id });
+    this.tracks = this.tracks.filter((track) => { return track.id !== id });
+    console.log(this.tracks);
   }
 
   hasTrack(id) {
