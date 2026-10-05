@@ -24,7 +24,8 @@ ul{
 
 .main{
   mix-blend-mode: multiply;
-  background-image:url('../img/starry_sky.jpg');
+  background-image:url('../img/a_listening_room_dither.jpg');
+  /* background-image:url('../img/starry_sky.jpg'); */
   background-size:cover;
   border:1em solid white;
   height:100%;
@@ -65,13 +66,15 @@ header{
   display:flex;
 }
 
+
 h1{
   margin:0;
-  line-height:0;
+  line-height:0.8em;
   letter-spacing:-0.16em;
   font-size:20em;
   color:white;
 }
+
 
 .hud{
   /* display:flex; */
@@ -80,6 +83,31 @@ h1{
   
 }
 
+header a{
+  color:white;
+}
+
+.overhang-correction{
+  letter-spacing: 0;
+  font-size: 6rem;
+  line-height: initial;
+}
+
+.header-inner{
+  border:1px solid white;
+  padding:1rem;
+}
+
+.start:before{
+  content:" ";
+  background-image:url("../img/icons/play_triangle.svg");
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  background-repeat: no-repeat;
+  vertical-align: bottom;
+  margin-right: 0.25rem;
+}
 
 .voice-display{
   display:inline-block;
@@ -108,6 +136,3 @@ h1{
   height: 2em;
 }
 
-.start{
-  position:absolute;
-}

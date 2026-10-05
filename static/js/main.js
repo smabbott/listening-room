@@ -21,14 +21,14 @@ addEventListener("DOMContentLoaded", (event) => {
   const socket = io();
   // gather information about the client 
   // that we will then interperate as musical parameters
-  var voice = "Voice";
+  // var voice = "Voice";
   var cpu = navigator.platform.toLowerCase();
 
-  if (/linux/.test(cpu)) {
-    voice = "Buzzard";
-  } else if (/windows/.test(cpu)) {
-    //…
-  }
+  // if (/linux/.test(cpu)) {
+  // voice = "Buzzard";
+  // } else if (/windows/.test(cpu)) {
+  //…
+  // }
 
   socket.emit("join", {
     cpu: navigator.platform.toLowerCase(),

@@ -9,7 +9,7 @@ AUTHOR = "Seth Mabbott"
 app = Flask(__name__)
 app.config['SESSION_PERMANENT']=False
 app.config["SESSION_TYPE"]='filesystem'
-app.config['SECRET_KEY'] = "change_this"
+app.config['SECRET_KEY'] = "nope_still_need_to_change_this"
 Session(app)
 socketio = SocketIO(app, manage_session=False)
 
@@ -58,6 +58,8 @@ def handle_join(d):
         if cpu.find("linux") > -1:
             generator = "Buzzard"
         elif cpu.find("windows") > -1:
+            generator = "Voice"
+        else
             generator = "Voice"
         # TODO: mac, ios, android, other
 
