@@ -9,7 +9,7 @@ AUTHOR = "Seth Mabbott"
 app = Flask(__name__)
 app.config['SESSION_PERMANENT']=False
 app.config["SESSION_TYPE"]='filesystem'
-app.config['SECRET_KEY'] = "nope_still_need_to_change_this"
+app.config['SECRET_KEY']
 Session(app)
 socketio = SocketIO(app, manage_session=False)
 
