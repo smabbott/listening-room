@@ -59,7 +59,7 @@ def handle_join(d):
             generator = "Buzzard"
         elif cpu.find("windows") > -1:
             generator = "Voice"
-        else
+        else:
             generator = "Voice"
         # TODO: mac, ios, android, other
 
