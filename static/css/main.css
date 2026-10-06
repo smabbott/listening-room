@@ -231,41 +231,39 @@ h4{
 
 
 
-/* STATES */
-/* maybe a different name here */
-.off.main{
-  /* background:black; */
-  /* background-image: url('../img/black.png') opacity; */
-}
+/* STATES / MODES */
 
 
-.off .start{
-  background-color:white;
-}
+.off{
 
-.off .start:before{
-  background-image:url("/static/img/icons/play_triangle.svg");
-}
+  .start{
+    background-color:white;
+  }
 
-.off .curtain{
-  opacity:1;
-}
+  .start:before{
+    background-image:url("/static/img/icons/play_triangle.svg");
+  }
 
-.off .control-panel{
-  border:2px solid white;
-  background-color: black;
-  border-color:white;
-  color:white;
-}
+  .curtain{
+    opacity:1;
+  }
 
-.off .control-panel div:first-child{
-  border-right:2px solid white;
-}
+  .control-panel{
+    border:2px solid white;
+    background-color: black;
+    border-color:white;
+    color:white;
+  }
 
-.off .control-panel-label{
-  border-bottom-color:white
-}
+  .control-panel div:first-child{
+    border-right:2px solid white;
+  }
 
-.off h1{
-  color: white;
+  .control-panel-label{
+    border-bottom-color:white
+  }
+
+  .control-panel h1{
+    color: white;
+  }
 }
