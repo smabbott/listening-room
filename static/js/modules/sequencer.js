@@ -50,7 +50,6 @@ class Sequencer {
       //   - delay += i*(noteLength/numbeats)
       //   - noteOn(note, noteLength/numBeats, delay)
       if (track.mask[beat] !== 0) {
-        console.log("o");
         var repeats = track.mask[beat];
         var delay = 0;
         for (var i = 0; i < repeats; i++) {
@@ -65,7 +64,6 @@ class Sequencer {
 
 
       } else {
-        console.log("skip beat");
       }
     }
     this.tickCount += 1;
@@ -77,11 +75,8 @@ class Sequencer {
 
 
   removeTrack(id) {
-    console.log("remove voice", id);
-    console.log("currently…", this.tracks)
     // filter the tracks array looking for matching id, remove that item.
     this.tracks = this.tracks.filter((track) => { return track.id !== id });
-    console.log(this.tracks);
   }
 
   hasTrack(id) {

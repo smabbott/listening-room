@@ -1,6 +1,6 @@
 /* TODO: css reset */
 
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@700&family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 html{
   background-color:teal; 
@@ -11,7 +11,7 @@ html, body{
   padding:0;
   margin:0;
   height:100%;
-  font-family:"IBM Plex Mono";
+  font-family:"Montserrat";
 }
 
 ul{
@@ -21,11 +21,11 @@ ul{
 }
 
 
-
 .main{
+ 
   mix-blend-mode: multiply;
-  background-image:url('../img/a_listening_room_dither.jpg');
   /* background-image:url('../img/starry_sky.jpg'); */
+  background-image: url('../img/a_listening_room_dither.jpg');
   background-size:cover;
   border:1em solid white;
   height:100%;
@@ -58,7 +58,20 @@ ul{
   border-top: 2em solid white;
 }
 
-header{
+.curtain{
+  transition-property: opacity;
+  transition-duration: 3s;
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  width: calc(100% - 2rem);
+  height: calc(100% - 2rem);
+  background-color: black;
+  z-index: -1;
+  opacity: 0;
+}
+
+.control-panel-wrapper{
   align-self:center;
   flex-grow:2;
   justify-content:center;
@@ -66,13 +79,55 @@ header{
   display:flex;
 }
 
+.control-panel{
+  border:2px solid white;
+  color:white;
+  display:flex;
+  flex-direction:row;
+}
+
+/* TODO: make this a variable */
+.control-panel div:first-child{
+  border-right:2px solid white;
+}
+
+.control-panel-label{
+  font-size: 1.25rem;
+  text-transform:uppercase;
+  border-bottom:2px solid white;
+  padding:1rem;
+}
+
+
+.control-panel-label:last-child{
+  border-bottom:none;
+}
+
+.control-panel-label h4, .control-panel-label h1  {
+  display:inline-block;
+  margin:0;
+  vertical-align:top;
+}
+
+.control-panel-label h1{
+  font-size:18rem;
+}
+
+.control-panel-label h4{
+  margin-right:1rem;
+}
 
 h1{
+  font-family:"IBM Plex Mono";
   margin:0;
   line-height:0.8em;
   letter-spacing:-0.16em;
   font-size:20em;
   color:white;
+}
+
+h4{
+  font-size:0.625rem;
 }
 
 
@@ -83,8 +138,38 @@ h1{
   
 }
 
-header a{
+.control-panel a{
   color:white;
+}
+
+.toggle{
+  display: flex;
+  vertical-align: middle;
+  align-items: center;
+  margin: 1rem;
+}
+
+.toggle-base{
+  margin:0 0.5rem;
+  display: block;
+  border: 2px solid white;
+  width: 3rem;
+  border-radius: 0.7rem;
+  box-sizing: border-box;
+  height: 1.4rem;
+  padding: 0.1rem;
+}
+
+.toggle-circle{
+  width: 1rem;
+  height: 1rem;
+  display: block;
+  background-color: white;
+  border-radius: 50%;
+}
+
+.toggle-circle.on{
+  float:right;
 }
 
 .overhang-correction{
@@ -98,15 +183,22 @@ header a{
   padding:1rem;
 }
 
+.start{
+  display: block;
+  width: 4rem;
+  text-align: center;
+  padding:1rem;
+  background-color:black;
+}
+
 .start:before{
   content:" ";
-  background-image:url("../img/icons/play_triangle.svg");
-  width: 18px;
-  height: 18px;
+  width: 25px;
+  height: 25px;
   display: inline-block;
   background-repeat: no-repeat;
-  vertical-align: bottom;
-  margin-right: 0.25rem;
+  background-image:url("../img/icons/stop_square.svg");
+  background-position: center center;
 }
 
 .voice-display{
@@ -136,3 +228,24 @@ header a{
   height: 2em;
 }
 
+
+
+/* STATES */
+/* maybe a different name here */
+.off.main{
+  /* background:black; */
+  /* background-image: url('../img/black.png') opacity; */
+}
+
+
+.off .start{
+  background-color:white;
+}
+
+.off .start:before{
+  background-image:url("/static/img/icons/play_triangle.svg");
+}
+
+.off .curtain{
+  opacity:1;
+}

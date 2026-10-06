@@ -54,7 +54,6 @@ addEventListener("DOMContentLoaded", (event) => {
   socket.on("add_voice", addVoice);
 
   socket.on("remove_voice", (id) => {
-    console.log("remove voice", id)
     sequencer.removeTrack(id);
     // TODO: remove HUD by id
     var display = document.getElementById(id).remove();
@@ -64,8 +63,6 @@ addEventListener("DOMContentLoaded", (event) => {
 
 
   function addVoice(v) {
-    console.log("add voice", v.alias);
-    console.log("hasTrack?", sequencer.hasTrack(v.alias));
     if (!sequencer.hasTrack(v.alias)) {
       var rhythm = v.rhythm.split("");
       var voice;
@@ -120,6 +117,10 @@ addEventListener("DOMContentLoaded", (event) => {
   }
 
   function startAudio() {
+    var main = document.querySelector(".main");
+    var mainClasses = main.classList;
+    mainClasses.remove('off');
+    main.classList = mainClasses;
     //sequencer.tracks[0].voice.start();
 
     // TODO: move this to the internals of the sequencer class
